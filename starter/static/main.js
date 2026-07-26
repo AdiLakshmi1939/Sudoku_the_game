@@ -6,6 +6,7 @@ let currentDifficulty = 'medium';
 let gameCompleted = false;
 let timerInterval = null;
 let elapsedSeconds = 0;
+let hintsUsed = 0;
 const LEADERBOARD_KEY = 'sudoku-top10';
 const THEME_KEY = 'sudoku-theme';
 
@@ -136,7 +137,8 @@ function renderLeaderboard() {
     const item = document.createElement('li');
     const minutes = String(Math.floor(entry.timeSeconds / 60)).padStart(2, '0');
     const seconds = String(entry.timeSeconds % 60).padStart(2, '0');
-    item.innerHTML = `<strong>#${index + 1}</strong> ${entry.playerName} — ${minutes}:${seconds} — ${entry.difficulty}`;
+    const hints = entry.hintsUsed !== undefined ? entry.hintsUsed : 0;
+    item.innerHTML = `<strong>#${index + 1}</strong> ${entry.playerName} — ${minutes}:${seconds} — ${entry.difficulty} — Hints: ${hints}`;
     list.appendChild(item);
   });
 }
@@ -149,7 +151,8 @@ function promptForNameAndSave() {
   saveLeaderboardEntry({
     playerName: playerName.trim() || 'Player',
     timeSeconds: elapsedSeconds,
-    difficulty: currentDifficulty
+    difficulty: currentDifficulty,
+    hintsUsed: hintsUsed
   });
 }
 
@@ -178,7 +181,7 @@ function checkCompletion() {
     }
   }
 
-  const isSolved = board.every((row, rowIndex) => row.every((value, colIndex) => value === puzzle[rowIndex][colIndex] || isValidPlacement(rowIndex, colIndex, value)));
+  const isSolved = board.every((row, rowIndex) => row.every((value, colIndex) => value === solution[rowIndex][colIndex]));
   if (!isSolved) return;
 
   gameCompleted = true;
@@ -267,6 +270,7 @@ function renderPuzzle(puz, solvedBoard = null) {
   puzzle = puz;
   solution = solvedBoard || [];
   gameCompleted = false;
+  hintsUsed = 0;
   startTimer();
   createBoardElement();
   const boardDiv = document.getElementById('sudoku-board');
@@ -317,7 +321,8 @@ function applyHint() {
       input.disabled = true;
       input.className = `sudoku-cell ${Number(input.dataset.box) % 2 === 1 ? 'box-alt' : 'box-normal'} prefilled hint-cell`;
       puzzle[row][col] = value;
-      showMessage(`Hint used: revealed row ${row + 1}, column ${col + 1}.`, '#1565c0');
+      hintsUsed += 1;
+      showMessage(`Hint used: revealed row ${row + 1}, column ${col + 1}. Hints: ${hintsUsed}`, '#1565c0');
       checkCompletion();
       return;
     }
