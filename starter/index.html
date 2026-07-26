@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sudoku Game</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <h1>Sudoku Game</h1>
+    <p class="sr-only">Use the arrow keys to move between Sudoku cells. Press Delete or Backspace to clear a selected cell.</p>
+    <div class="controls" role="group" aria-label="Game controls">
+      <label for="difficulty-select">Difficulty:</label>
+      <select id="difficulty-select" aria-label="Choose puzzle difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+      <button id="new-game" aria-label="Start a new Sudoku puzzle">New Game</button>
+      <button id="check-solution" aria-label="Check the current board for mistakes">Check Solution</button>
+      <button id="hint-button" aria-label="Reveal one correct value as a hint">Hint</button>
+      <button id="theme-toggle" type="button" aria-pressed="false" aria-label="Toggle light and dark theme">🌙 Dark Mode</button>
+      <span id="timer" aria-live="polite">Time: 00:00</span>
+      <span id="message" role="status" aria-live="polite"></span>
+    </div>
+    <div id="sudoku-board" role="grid" aria-label="Sudoku board"></div>
+    <section class="leaderboard-card" aria-labelledby="leaderboard-title">
+      <h2 id="leaderboard-title">Top 10 Scores</h2>
+      <ol id="leaderboard-list"></ol>
+    </section>
+  </main>
+  <script src="/static/main.js"></script>
+</body>
+</html>
